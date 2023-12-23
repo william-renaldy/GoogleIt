@@ -5,7 +5,7 @@ setup.cfg
 src/GoogleIt/__init__.py
 src/GoogleIt/converter.py
 src/GoogleIt/googleit.py
-src/GoogleIt/palm_model.py
+src/GoogleIt/models.py
 src/GoogleIt/text_processor.py
 src/GoogleIt.egg-info/PKG-INFO
 src/GoogleIt.egg-info/SOURCES.txt
