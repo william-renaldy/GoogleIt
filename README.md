@@ -26,7 +26,7 @@ print(response)
 
 1. [`converter.py` Documentation](#converterpy-documentation) - Provides functionality for converting HTML or websites to PDF.
 
-2. [`palm_model.py` Documentation](#palm_modelpy-documentation) - Wrapper class for interacting with the Google Palm 2 language model.
+2. [`models.py` Documentation](#modelspy-documentation) - Wrapper class for interacting with the Google Palm 2 language model.
 
 3. [`text_processor.py` Documentation](#text_processorpy-documentation) - Functions for processing text documents, including converting PDF to DOCX, reading paragraphs from DOCX, dividing paragraphs into chunks, and extracting text and paragraphs from PDF.
 
@@ -66,7 +66,7 @@ converter.convert(source='https://example.com', target='output.pdf', timeout=5)
     This module relies on the Selenium library and requires a compatible WebDriver (e.g., ChromeDriver) to be installed.
 
 
-## `palm_model.py` Documentation
+## `models.py` Documentation
 
 This module provides wrapper classes for interacting with Google's language models, including Palm 2 and Gemini.
 
