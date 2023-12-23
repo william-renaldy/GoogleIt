@@ -32,7 +32,7 @@ print(response)
 
 4. [**`googleit.py` Documentation](#link-to-googleitpy-documentation) - Main module encapsulating the GoogleIt class, which provides functionality for querying, retrieving URLs, downloading content, preprocessing text, and more.
 
-## `converter.py` Documentation
+# `converter.py` Documentation
 
 GoogleIt Converter Module
 
@@ -43,9 +43,10 @@ Usage:
     - Call the `convert` function with appropriate parameters.
 
 Example:
-    ```python
-    converter.convert(source='https://example.com', target='output.pdf', timeout=5)
-    ```
+
+```python
+converter.convert(source='https://example.com', target='output.pdf', timeout=5)
+```
 
 Functions:
     - `convert(source: str, target: str, timeout: int = 2, print_options: dict = {}) -> None`:
