@@ -4,23 +4,23 @@ GoogleIt Module
 This module provides the `GoogleIt` class, which encapsulates functionality for performing queries, retrieving top URLs from Google search results, downloading content from URLs, preprocessing text, extracting domain names from URLs, combining PDF files, and extracting relevant content based on cosine similarity.
 
 Usage:
-    - Import the module: `from GoogleIt import GoogleIt`
+    - Import the module: `from GoogleIt.googleit import GoogleIt`
     - Create an instance of the `GoogleIt` class with a valid API key.
     - Use the provided methods for various tasks.
 
 Example:
-    ```python
-    google_it = GoogleIt(api_key='your_api_key_here')
-    query = "How does photosynthesis work?"
-    response = google_it.get(query=query, urls_count=5)
-    print(response)
-    ```
+```python
+google_it = GoogleIt(api_key='your_api_key_here', model = "Palm2")
+query = "How does photosynthesis work?"
+response = google_it.get(query=query, urls_count=5)
+print(response)
+```
 
 Classes:
     - `GoogleIt`:
         - A class that provides functionality for querying, retrieving URLs, downloading content, preprocessing text, and more.
         - Methods:
-            - `__init__(self, api_key: str) -> None`: Initializes the `GoogleIt` instance with the provided API key.
+            - `__init__(self, api_key: str, model: str = "Palm2") -> None`: Initializes the `GoogleIt` instance with the provided API key and a specified language model.
             - `save_url_to_pdf(self, url: str, pdf_path: str) -> None`: Downloads content from a URL and saves it as a PDF file.
             - `preprocess_text(self, text: str) -> str`: Preprocesses text by converting it to lowercase, tokenizing, and removing stopwords and punctuation.
             - `get_domain_name(self, url: str) -> str`: Extracts the domain name from a given URL.
@@ -32,11 +32,10 @@ Classes:
             - `get(self, query: str, pdf_path: str | None = None, urls_count: int = 5) -> str`: Main function to retrieve information based on a query, optionally using a PDF document.
 
 Attributes:
-    - `model` (GoogleIt attribute): An instance of the `Palm2Model` class for natural language processing.
+    - `model` (GoogleIt attribute): An instance of the model class for natural language processing.
 
 Note:
-    This module requires the `Palm2Model` class from the `palm_model` module for natural language processing.
-
+    This module requires the `Palm2Model` class and `GeminiModel` from the `models` module for natural language processing.
 """
 
 
@@ -46,12 +45,12 @@ import shutil
 from PyPDF2 import PdfMerger
 from bs4 import BeautifulSoup
 import requests
-from GoogleIt import converter
+import converter
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from GoogleIt.palm_model import Palm2Model
-from GoogleIt.text_processor import extract_text_from_pdf, get_chunks
+from models import Palm2Model, GeminiModel
+from text_processor import extract_text_from_pdf, get_chunks
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -61,62 +60,56 @@ nltk.download('punkt')
 
 class GoogleIt:
     """
-    GoogleIt is a class that provides functionality to perform queries, retrieve top URLs from Google search results,
-    download content from URLs, preprocess text, extract domain names from URLs, combine PDF files, and extract relevant
-    content based on cosine similarity.
-
-    Args:
-        api_key (str): The API key for initializing the underlying Palm2Model.
+    GoogleIt class for retrieving information using Google search and document processing.
 
     Attributes:
-        model (Palm2Model): An instance of the Palm2Model for natural language processing.
+        model: An instance of the underlying language model (Palm2Model or GeminiModel).
 
     Methods:
-        save_url_to_pdf(url, pdf_path):
-            Downloads content from a URL and saves it as a PDF file.
-
-        preprocess_text(text):
-            Preprocesses text by converting it to lowercase, tokenizing, and removing stopwords and punctuation.
-
-        get_domain_name(url):
-            Extracts the domain name from a given URL.
-
-        get_top_urls(query, urls_count=5):
-            Retrieves top URLs from Google search results based on a given query.
-
-        combine_pdf(folder_path):
-            Combines multiple PDF files into a single merged PDF.
-
-        extract_relevant_content(input_text, main_document, threshold=0.2):
-            Extracts relevant content from the input text based on cosine similarity with the main document.
-
-        with_document(query, google_doc, pdf_path):
-            Processes a query using a provided PDF document and a Google document.
-
-        without_document(query, paragraphs):
-            Processes a query without a provided PDF document.
-
-        get(query, pdf_path=None, urls_count=5):
-            Main function to retrieve information based on a query, optionally using a PDF document.
+        __init__: Initializes the GoogleIt instance with the provided API key and model.
+        save_url_to_pdf: Downloads content from a URL and saves it as a PDF file.
+        preprocess_text: Preprocesses text by converting it to lowercase, tokenizing, and removing stopwords and punctuation.
+        get_domain_name: Extracts the domain name from a given URL.
+        get_top_urls: Retrieves top URLs from Google search results based on a given query.
+        combine_pdf: Combines multiple PDF files into a single merged PDF.
+        extract_relevant_content: Extracts relevant content from the input text based on cosine similarity with the main document.
+        with_document: Processes a query using a provided PDF document and a Google document.
+        without_document: Processes a query without a provided PDF document.
+        get: Main function to retrieve information based on a query, optionally using a PDF document.
     """
 
-    def __init__(self, api_key: str) -> None:
+    def __init__(self, api_key: str, model: str = "Palm2") -> None:
         """
-        Initializes the GoogleIt instance with the provided API key.
+        Initializes the GoogleIt instance with the provided API key and a specified language model.
 
         Args:
-            api_key (str): The API key for initializing the underlying Palm2Model.
+            api_key (str): The API key for initializing the underlying language model.
+            model (str): The backend language model to use, either "Palm2" or "GeminiPro" (default is "Palm2").
+        
+        Raises:
+            ValueError: If an invalid value for `model` is provided.
+
+        Returns:
+            None
         """
-        self.model = Palm2Model()
-        self.model.init(api_key = api_key)
+        # Validate and set the language model
+        if model == "Palm2":
+            self.model = Palm2Model()
+        elif model == "GeminiPro":
+            self.model = GeminiModel()
+        else:
+            raise ValueError("Invalid value for `model`. Available models are: [Palm2, GeminiPro]")
+
+        # Initialize the language model with the provided API key
+        self.model.init(api_key=api_key)
 
     def save_url_to_pdf(self, url: str, pdf_path: str) -> None:
         """
         Downloads content from a URL and saves it as a PDF file.
 
         Parameters:
-        - url (str): The URL to download content from.
-        - pdf_path (str): The path to save the resulting PDF file.
+            url (str): The URL to download content from.
+            pdf_path (str): The path to save the resulting PDF file.
         """
         converter.convert(url, pdf_path)
 
@@ -125,10 +118,10 @@ class GoogleIt:
         Preprocesses text by converting it to lowercase, tokenizing, and removing stopwords and punctuation.
 
         Parameters:
-        - text (str): The input text to preprocess.
+            text (str): The input text to preprocess.
 
         Returns:
-        str: The preprocessed text.
+            str: The preprocessed text.
         """
         tokens = word_tokenize(text.lower())
         stop_words = set(stopwords.words('english'))
@@ -140,10 +133,10 @@ class GoogleIt:
         Extracts the domain name from a given URL.
 
         Parameters:
-        - url (str): The input URL.
+            url (str): The input URL.
 
         Returns:
-        str: The extracted domain name.
+            str: The extracted domain name.
         """
         match = re.search(r'(https?://)?(www\.)?(.+?)\.(.+?)', url)
         if match:
@@ -156,11 +149,11 @@ class GoogleIt:
         Retrieves top URLs from Google search results based on a given query.
 
         Parameters:
-        - query (str): The search query.
-        - urls_count (int): The number of URLs to retrieve (default is 5).
+            query (str): The search query.
+            urls_count (int): The number of URLs to retrieve (default is 5).
 
         Returns:
-        tuple[list[str], list[str]]: A tuple containing lists of URLs and corresponding domain names.
+            tuple[list[str], list[str]]: A tuple containing lists of URLs and corresponding domain names.
         """
         results = 5 * urls_count
         page = requests.get(f"https://www.google.com/search?q={query}&num={results}")
@@ -191,10 +184,10 @@ class GoogleIt:
         Combines multiple PDF files into a single merged PDF.
 
         Parameters:
-        - folder_path (str): The path to the folder containing PDF files.
+            folder_path (str): The path to the folder containing PDF files.
 
         Returns:
-        str: The path to the merged PDF file.
+            str: The path to the merged PDF file.
         """
         merged_pdf_path = "merged.pdf"
         merger = PdfMerger()
@@ -211,12 +204,12 @@ class GoogleIt:
         Extracts relevant content from the input text based on cosine similarity with the main document.
 
         Parameters:
-        - input_text (str): The input text to analyze.
-        - main_document (str): The main document for comparison.
-        - threshold (float): The similarity threshold (default is 0.2).
+            input_text (str): The input text to analyze.
+            main_document (str): The main document for comparison.
+            threshold (float): The similarity threshold (default is 0.2).
 
         Returns:
-        str: The relevant content if similarity is above the threshold; otherwise, None.
+            str: The relevant content if similarity is above the threshold; otherwise, None.
         """
         preprocessed_input = self.preprocess_text(input_text)
         preprocessed_main_doc = self.preprocess_text(main_document)
@@ -239,12 +232,12 @@ class GoogleIt:
         Processes a query using a provided PDF document and a Google document.
 
         Parameters:
-        - query (str): The query to process.
-        - google_doc (str): The Google document content.
-        - pdf_path (str): The path to the PDF document.
+            query (str): The query to process.
+            google_doc (str): The Google document content.
+            pdf_path (str): The path to the PDF document.
 
         Returns:
-        str: The response to the query.
+            str: The response to the query.
         """
         input_doc = extract_text_from_pdf(pdf_path=pdf_path)[0]
         chunks = google_doc.split("\n")
@@ -257,18 +250,21 @@ class GoogleIt:
                 relevant_chunks.append(relevant_content)
 
         docs = "".join(relevant_chunks)[:49000]
-        return docs
+
+        response = self.model.query(document=docs, question=query)
+
+        return response
 
     def without_document(self, query: str, paragraphs: list[str]) -> str:
         """
         Processes a query without a provided PDF document.
 
         Parameters:
-        - query (str): The query to process.
-        - paragraphs (list[str]): List of document paragraphs.
+            query (str): The query to process.
+            paragraphs (list[str]): List of document paragraphs.
 
         Returns:
-        str: The response to the query.
+            str: The response to the query.
         """
         chunks = get_chunks(paragraphs=paragraphs)
         document = "".join(chunks)[:49000]
@@ -280,12 +276,12 @@ class GoogleIt:
         Main function to retrieve information based on a query, optionally using a PDF document.
 
         Parameters:
-        - query (str): The query to process.
-        - pdf_path (str | None): The path to the PDF document (optional).
-        - urls_count (int): The number of URLs to consider (default is 5).
+            query (str): The query to process.
+            pdf_path (str | None): The path to the PDF document (optional).
+            urls_count (int): The number of URLs to consider (default is 5).
 
         Returns:
-        str: The response to the query.
+            str: The response to the query.
         """
         urls, domains = self.get_top_urls(query=query, urls_count=urls_count)
         folder_path = "PDFFiles"
@@ -311,5 +307,9 @@ class GoogleIt:
         else:
             response = self.without_document(query=query, paragraphs=paragraphs)
 
-        print(f"{'*' * 20}\nResponse: {response}")
         return response
+
+if __name__ == "__main__":
+    m = GoogleIt("AIzaSyAXCVMFirOACW80v3w4lNEruWBAskWbeiw", model = "Palm2")
+    r = m.get("How does photosynthesis work?", urls_count=2)
+    print(r)
