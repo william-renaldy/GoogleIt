@@ -515,4 +515,5 @@ print(response)
 
 **Note:**
 - Replace `'your_api_key_here'` with your actual Google API key.
->>>>>>> e62b8d4a75f8fb4db6458a32d842afd03107614f
+
+#### You can get the Google API key from https://makersuite.google.com/app/apikey.
