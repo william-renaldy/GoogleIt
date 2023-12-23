@@ -1,10 +1,10 @@
-name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+name: GoogleIt
 
 on: push
 
 jobs:
   build:
-    name: Build distribution 📦
+    name: GoogleIt
     runs-on: ubuntu-latest
 
     steps:
@@ -29,14 +29,14 @@ jobs:
 
   publish-to-pypi:
     name: >-
-      Publish Python 🐍 distribution 📦 to PyPI
+      GoogleIt
     if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
     needs:
     - build
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/<package-name>  # Replace <package-name> with your PyPI project name
+      url: https://pypi.org/p/GoogleIt  # Replace <package-name> with your PyPI project name
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
@@ -91,27 +91,3 @@ jobs:
         gh release upload
         '${{ github.ref_name }}' dist/**
         --repo '${{ github.repository }}'
-
-  publish-to-testpypi:
-    name: Publish Python 🐍 distribution 📦 to TestPyPI
-    needs:
-    - build
-    runs-on: ubuntu-latest
-
-    environment:
-      name: testpypi
-      url: https://test.pypi.org/p/<package-name>
-
-    permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
-
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v3
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Publish distribution 📦 to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
