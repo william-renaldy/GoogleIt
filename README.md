@@ -24,31 +24,32 @@ print(response)
 
 ## Modules
 
-1. [**`converter.py` Documentation](#link-to-converterpy-documentation) - Provides functionality for converting HTML or websites to PDF.
+1. [`converter.py` Documentation](#converterpy-documentation) - Provides functionality for converting HTML or websites to PDF.
 
-2. [**`palm_model.py` Documentation](#link-to-palm_modelpy-documentation) - Wrapper class for interacting with the Google Palm 2 language model.
+2. [`palm_model.py` Documentation](#palm_modelpy-documentation) - Wrapper class for interacting with the Google Palm 2 language model.
 
-3. [**`text_processor.py` Documentation](#link-to-text_processorpy-documentation) - Functions for processing text documents, including converting PDF to DOCX, reading paragraphs from DOCX, dividing paragraphs into chunks, and extracting text and paragraphs from PDF.
+3. [`text_processor.py` Documentation](#text_processorpy-documentation) - Functions for processing text documents, including converting PDF to DOCX, reading paragraphs from DOCX, dividing paragraphs into chunks, and extracting text and paragraphs from PDF.
 
-4. [**`googleit.py` Documentation](#link-to-googleitpy-documentation) - Main module encapsulating the GoogleIt class, which provides functionality for querying, retrieving URLs, downloading content, preprocessing text, and more.
+4. [`googleit.py` Documentation](#googleitpy-documentation) - Main module encapsulating the GoogleIt class, which provides functionality for querying, retrieving URLs, downloading content, preprocessing text, and more.
 
-# `converter.py` Documentation
+
+## `converter.py` Documentation
 
 GoogleIt Converter Module
 
 This module provides functionality to convert HTML files or websites into PDF format using Selenium.
 
-Usage:
+### Usage:
     - Import the module: `from GoogleIt import converter`
     - Call the `convert` function with appropriate parameters.
 
-Example:
+ ### Example:
 
 ```python
 converter.convert(source='https://example.com', target='output.pdf', timeout=5)
 ```
 
-Functions:
+### Functions:
     - `convert(source: str, target: str, timeout: int = 2, print_options: dict = {}) -> None`:
         Converts a given HTML file or website into PDF.
 
@@ -61,7 +62,7 @@ Functions:
         Raises:
             - Exception: If an error occurs during PDF conversion.
 
-Note:
+### Note:
     This module relies on the Selenium library and requires a compatible WebDriver (e.g., ChromeDriver) to be installed.
 
 
@@ -71,23 +72,23 @@ GoogleIt Palm Model Module
 
 This module provides a wrapper class for interacting with the Google Palm 2 language model.
 
-Usage:
+### Usage:
     - Import the module: `from GoogleIt import palm_model`
     - Create an instance of `Palm2Model`.
     - Initialize the model using the `init` method with a valid API key.
     - Use the `query` method to generate answers based on a reference document and user's question.
 
-# Example:
-    ```python
-    palm = palm_model.Palm2Model()
-    palm.init(api_key='your_api_key_here')
-    document = "The reference document containing relevant information."
-    question = "What is the capital of France?"
-    answer = palm.query(document, question)
-    print(answer)
-    ```
+### Example:
+```python
+palm = palm_model.Palm2Model()
+palm.init(api_key='your_api_key_here')
+document = "The reference document containing relevant information."
+question = "What is the capital of France?"
+answer = palm.query(document, question)
+print(answer)
+```
 
-Classes:
+### Classes:
     - `Palm2Model`:
         - Wrapper class for the Google Palm 2 language model.
         - Methods:
@@ -96,13 +97,13 @@ Classes:
             - `make_prompt(self, query: str, relevant_passage: str) -> str`: Generates a prompt for the Palm 2 language model.
             - `query(self, document: str, question: str) -> str`: Queries the Palm 2 language model for an answer.
 
-Attributes:
+### Attributes:
     - `model` (Palm2Model attribute): The initialized Palm 2 language model.
 
-Raises:
+### Raises:
     - `ValueError`: If the language model is not initialized before calling the `query` method.
 
-Note:
+### Note:
     This module requires a valid API key for authentication.
 
 
@@ -112,29 +113,29 @@ GoogleIt Text Processor Module
 
 This module provides functions for processing text documents, including converting PDF to DOCX, reading paragraphs from DOCX, dividing paragraphs into chunks, and extracting text and paragraphs from PDF.
 
-Usage:
+### Usage:
     - Import the module: `from GoogleIt import text_processor`
     - Use the provided functions for text processing tasks.
 
-# Example:
-    ```python
-    pdf_path = "path/to/input.pdf"
-    docx_path = "path/to/output.docx"
+### Example:
+```python
+pdf_path = "path/to/input.pdf"
+docx_path = "path/to/output.docx"
 
-    # Convert PDF to DOCX
-    text_processor.pdf_to_docx(pdf_file=pdf_path, docx_file=docx_path)
+# Convert PDF to DOCX
+text_processor.pdf_to_docx(pdf_file=pdf_path, docx_file=docx_path)
 
-    # Read paragraphs from DOCX
-    paragraphs = text_processor.read_document_paragraphs(filename=docx_path)
+# Read paragraphs from DOCX
+paragraphs = text_processor.read_document_paragraphs(filename=docx_path)
 
-    # Divide paragraphs into chunks
-    chunked_paragraphs = text_processor.get_chunks(paragraphs=paragraphs, chunk_size=10, overlap_size=2)
+# Divide paragraphs into chunks
+chunked_paragraphs = text_processor.get_chunks(paragraphs=paragraphs, chunk_size=10, overlap_size=2)
 
-    # Extract text and paragraphs from PDF
-    pdf_text, pdf_paragraphs = text_processor.extract_text_from_pdf(pdf_path=pdf_path, docx_path=docx_path)
-    ```
+# Extract text and paragraphs from PDF
+pdf_text, pdf_paragraphs = text_processor.extract_text_from_pdf(pdf_path=pdf_path, docx_path=docx_path)
+```
 
-# Functions:
+### Functions:
     - `pdf_to_docx(pdf_file: str, docx_file: str) -> None`:
         Converts a PDF file to a DOCX file.
 
@@ -149,7 +150,7 @@ Usage:
 
         Returns a tuple containing the extracted text and a list of paragraphs.
 
-Note:
+### Note:
     - The `get_chunks` function requires passing the list of paragraphs to the function.
     - The module includes an example at the end demonstrating the use of the `extract_text_from_pdf` function.
 
@@ -160,20 +161,20 @@ GoogleIt Module
 
 This module provides the `GoogleIt` class, which encapsulates functionality for performing queries, retrieving top URLs from Google search results, downloading content from URLs, preprocessing text, extracting domain names from URLs, combining PDF files, and extracting relevant content based on cosine similarity.
 
-Usage:
-    - Import the module: `from GoogleIt import GoogleIt`
+### Usage:
+    - Import the module: `from GoogleIt.googleit import GoogleIt`
     - Create an instance of the `GoogleIt` class with a valid API key.
     - Use the provided methods for various tasks.
 
-Example:
-    ```python
-    google_it = GoogleIt(api_key='your_api_key_here')
-    query = "How does photosynthesis work?"
-    response = google_it.get(query=query, urls_count=5)
-    print(response)
-    ```
+### Example:
+```python
+google_it = GoogleIt(api_key='your_api_key_here')
+query = "How does photosynthesis work?"
+response = google_it.get(query=query, urls_count=5)
+print(response)
+```
 
-Classes:
+### Classes:
     - `GoogleIt`:
         - A class that provides functionality for querying, retrieving URLs, downloading content, preprocessing text, and more.
         - Methods:
@@ -188,13 +189,12 @@ Classes:
             - `without_document(self, query: str, paragraphs: list[str]) -> str`: Processes a query without a provided PDF document.
             - `get(self, query: str, pdf_path: str | None = None, urls_count: int = 5) -> str`: Main function to retrieve information based on a query, optionally using a PDF document.
 
-Attributes:
+### Attributes:
     - `model` (GoogleIt attribute): An instance of the `Palm2Model` class for natural language processing.
 
-Note:
+### Note:
     This module requires the `Palm2Model` class from the `palm_model` module for natural language processing.
 
 
 **Note:**
 - Replace `'your_api_key_here'` with your actual Google API key.
-- Ensure that the links in the documentation point to the appropriate sections.
