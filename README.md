@@ -11,7 +11,7 @@ pip install GoogleIt
 ## Usage
 
 ```python
-from GoogleIt import GoogleIt
+from GoogleIt.googleit import GoogleIt
 
 # Create an instance of the GoogleIt class
 google_it = GoogleIt(api_key='your_api_key_here')
