@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/GoogleIt/__init__.py
+src/GoogleIt/converter.py
+src/GoogleIt/googleit.py
+src/GoogleIt/palm_model.py
+src/GoogleIt/text_processor.py
+src/GoogleIt.egg-info/PKG-INFO
+src/GoogleIt.egg-info/SOURCES.txt
+src/GoogleIt.egg-info/dependency_links.txt
+src/GoogleIt.egg-info/requires.txt
+src/GoogleIt.egg-info/top_level.txt
