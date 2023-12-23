@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # GoogleIt Python Package
 
 The `GoogleIt` package provides a set of tools for querying Google search results, retrieving URLs, downloading content, preprocessing text, extracting domain names from URLs, combining PDF files, and extracting relevant content based on cosine similarity.
